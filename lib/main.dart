@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MaterialApp(
-  home: Home()
-));
+void main() => runApp(const MaterialApp(home: Home()));
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -14,25 +12,20 @@ class Home extends StatelessWidget {
         title: const Text('my first app'),
         centerTitle: true,
         backgroundColor: Colors.amber[300],
-
       ),
-      body: Center(
-        child: IconButton(
-          onPressed: () {
-            print('hoise');
-          },
-          icon: Icon(Icons.alternate_email),
-          color: Colors.green[200],
-        ),
+      body: Padding(
+        //color and margin can not be used
+        padding: EdgeInsets.all(100.0),
+        child: Text('hello',
+            style: TextStyle(
+              color: Colors.green,
+            )),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {  },
+        onPressed: () {},
         child: Text('click'),
         backgroundColor: Colors.amber[300],
       ),
     );
   }
 }
-
-
-
