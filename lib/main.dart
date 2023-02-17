@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MaterialApp(
-  home: Home()
-));
+void main() => runApp(const MaterialApp(home: Home()));
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -14,25 +12,40 @@ class Home extends StatelessWidget {
         title: const Text('my first app'),
         centerTitle: true,
         backgroundColor: Colors.amber[300],
-
       ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(1, 10, 20, 30),
-        margin: EdgeInsets.all(30),
-        color: Colors.grey[300],
-        child: Text('hi',
-        style: TextStyle(
-          color: Colors.red,
-        ))
-      ) ,
+      body: Row(
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text('hi folks'),
+          TextButton(
+              onPressed: () {
+                print('hoise');
+              },
+              style : ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.limeAccent),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
+              ),
+            child: Text('click')),
+          Container(
+            color: Colors.cyan,
+            padding: EdgeInsets.all(30.0),
+            child: Text(
+              'inside container',
+              style: TextStyle(
+                color: Colors.red[600],
+              ),
+            )
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {  },
+        onPressed: () {},
         child: Text('click'),
         backgroundColor: Colors.amber[300],
       ),
     );
   }
 }
-
-
-
