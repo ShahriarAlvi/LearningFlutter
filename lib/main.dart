@@ -13,31 +13,44 @@ class Home extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.amber[300],
       ),
-      body: Row(
-        // mainAxisAlignment: MainAxisAlignment.spaceAround,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: Column(
+        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.end,
         //crossAxisAlignment: CrossAxisAlignment.stretch,
-          crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text('hi folks'),
-          TextButton(
-              onPressed: () {
-                print('hoise');
-              },
-              style : ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.limeAccent),
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
-              ),
-            child: Text('click')),
+
+          Row(
+            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [Text('hi '),
+            Text('hellow'),]
+          ),
+
           Container(
-            color: Colors.cyan,
-            padding: EdgeInsets.all(30.0),
-            child: Text(
-              'inside container',
-              style: TextStyle(
-                color: Colors.red[600],
-              ),
-            )
+            padding: EdgeInsets.all(20),
+            color: Colors.limeAccent,
+            child: Text('One',
+            style: TextStyle(
+              color: Colors.red,
+            ),)
+          ),
+
+          Container(
+              padding: EdgeInsets.all(40),
+              color: Colors.red,
+              child: Text('Two',
+                style: TextStyle(
+                  color: Colors.cyan,
+                ),)
+          ),
+
+          Container(
+              padding: EdgeInsets.all(60),
+              color: Colors.green,
+              child: Text('Three',
+                style: TextStyle(
+                  color: Colors.black,
+                ),)
           ),
         ],
       ),
