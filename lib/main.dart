@@ -13,44 +13,36 @@ class Home extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.amber[300],
       ),
-      body: Column(
-        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisAlignment: MainAxisAlignment.end,
-        //crossAxisAlignment: CrossAxisAlignment.stretch,
-        crossAxisAlignment: CrossAxisAlignment.end,
+      body: Row(
         children: [
-
-          Row(
-            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [Text('hi '),
-            Text('hellow'),]
+          Expanded(
+            flex: 10,
+              child: Image.asset('assets/1672921962063.jpg')),
+          Expanded(
+            flex: 3,
+            child: Container(
+              padding: EdgeInsets.all(30.0),
+              color: Colors.cyan,
+              child: Text('one'),
+            ),
           ),
 
-          Container(
-            padding: EdgeInsets.all(20),
-            color: Colors.limeAccent,
-            child: Text('One',
-            style: TextStyle(
-              color: Colors.red,
-            ),)
+          Expanded(
+            flex: 10,
+            child: Container(
+              padding: EdgeInsets.all(30.0),
+              color: Colors.pink,
+              child: Text('Two'),),
           ),
 
-          Container(
-              padding: EdgeInsets.all(40),
-              color: Colors.red,
-              child: Text('Two',
-                style: TextStyle(
-                  color: Colors.cyan,
-                ),)
-          ),
+          Expanded(
+            flex: 1,
+            child: Container(
 
-          Container(
-              padding: EdgeInsets.all(60),
-              color: Colors.green,
-              child: Text('Three',
-                style: TextStyle(
-                  color: Colors.black,
-                ),)
+              padding: EdgeInsets.all(30.0),
+              color: Colors.amber,
+              child: Text('three'),
+            ),
           ),
         ],
       ),
