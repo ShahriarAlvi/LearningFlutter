@@ -1,8 +1,14 @@
-//import 'dart:ffi';
+library calendar;
+
+import 'dart:ffi';
+
+//import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
+
+part 'appointment-editor.dart';
 
 void main() => runApp(MaterialApp(home: MyApp()));
 
@@ -24,13 +30,16 @@ class MyAppPage extends StatefulWidget {
   State<MyAppPage> createState() => _MyAppPageState();
 }
 
+bool _isAllDay = false;
+
+String _subjectText = '',
+    _startTimeText = '',
+    _endTimeText = '',
+    _dateText = '',
+    _timeDetails = '';
+
 class _MyAppPageState extends State<MyAppPage>{
 
-  String? _subjectText = '',
-      _startTimeText = '',
-      _endTimeText = '',
-      _dateText = '',
-      _timeDetails = '';
 
   late final String eventName;
   late final DateTime from;
@@ -207,88 +216,46 @@ class _MyAppPageState extends State<MyAppPage>{
                       onPressed: (){
                         showDialog(context: context,
                             builder: (BuildContext context){
-                          return Material(
-                            color: Colors.white,
-                            child: ListView(
-                              children: [
-                                ListTile(
-                                  title: Row(
-                                    children: [Text('Event Details',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                    ),),]
-                                  ),
-                                ),
-
-                                const Divider(
-                                  height: 1.0,
-                                  thickness: 0.5,
-                                ),
-
-                                ListTile(
-                                  title: Row(
-                                    children: [Text('$_subjectText',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                      ),),]
-                                  ),
-                                ),
-
-                                const Divider(
-                                  height: 1.0,
-                                  thickness: 0.5,
-                                ),
-
-                                ListTile(
-                                  title: Row(
-                                    children: [Text('$_startTimeText',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                      ),),]
-                                  ),
-                                ),
-
-                                const Divider(
-                                  height: 1.0,
-                                  thickness: 0.5,
-                                ),
-
-                                ListTile(
-                                  title: Row(
-                                    children: [Text('$_endTimeText',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                      ),)]
-                                  ),
-                                ),
-
-                                const Divider(
-                                  height: 1.0,
-                                  thickness: 0.5,
-                                ),
-
-                                new TextButton(
-                                    onPressed: (){
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('Close'),),
-
-
-                              ],
-                            ),
-                          );
-
+                          return AppointmentEditor();
                             } );
                       },
                       child: new Text('edit'),)
                 ],
             );
           });
-    };
+    }
+
+    else {
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Container(
+              child: Text('No event set'),
+            ),
+            content: Container(
+                height: 70,
+                child: Text('Set an event'),
+    ),
+            actions: [
+              new TextButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                    },
+                  child: new Text('close')),
+              TextButton(
+                onPressed: (){
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context){
+                        return AppointmentEditor();
+                      } );
+                  },
+                child: new Text('edit'),)
+            ],
+          );
+        });
+    }
   }
 }
 
