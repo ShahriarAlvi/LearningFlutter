@@ -89,8 +89,8 @@ class _MyAppPageState extends State<MyAppPage>{
 
   void addAppointments(){
     var subjectCollection = [
-      'SWE\n321', 'SWE322', 'SWE323', 'SWE324',
-      'SWE327', 'SWE328', 'SWE330',
+      'SWE 321', 'SWE 322', 'SWE 323', 'SWE 324',
+      'SWE 327', 'SWE 328', 'SWE 330',
     ];
 
     _courses = <Appointment>[];
@@ -146,6 +146,12 @@ class _MyAppPageState extends State<MyAppPage>{
       _endTimeText = DateFormat('hh:mm a').
           format(appointmentDetails.endTime).toString();
 
+      if(appointmentDetails.isAllDay) {
+        _timeDetails = 'All Day';
+      } else {
+        _timeDetails = '$_startTimeText - $_endTimeText';
+      }
+
       showDialog(
           context: context,
           builder: (BuildContext context){
@@ -153,8 +159,55 @@ class _MyAppPageState extends State<MyAppPage>{
               title: Container(
                 child: Text('$_subjectText'),
               ),
-              //content: ,
+              content: Container(
+                height: 70,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text('$_dateText'),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(' '),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        // Text('$_startTimeText'),
+                        // Text(' - '),
+                        // Text('$_endTimeText'),
+                        Text(_timeDetails!,
+                            style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                              fontSize: 20,
+                        )),
+                      ],
+                    )
+                  ],
+                )
+              ),
+                actions: [
+                  new TextButton(
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                      },
+                      child: new Text('close')),
+                  TextButton(
+                      onPressed: (){
+                        showDialog(context: context,
+                            builder: (BuildContext context){
+                          return AlertDialog(
+                            title: Container(
+                              child: Text('Change Detail'),
+                            ),
+                          );
 
+                            } );
+                      },
+                      child: new Text('edit'),)
+                ],
             );
           });
     };
