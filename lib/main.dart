@@ -1,4 +1,4 @@
-import 'dart:ffi';
+//import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -27,10 +27,19 @@ class MyAppPage extends StatefulWidget {
 class _MyAppPageState extends State<MyAppPage>{
 
   String? _subjectText = '',
-  _startTimeText = '',
-  _endTimeText = '',
-  _dateText = '',
-  _timeDetails = '';
+      _startTimeText = '',
+      _endTimeText = '',
+      _dateText = '',
+      _timeDetails = '';
+
+  late final String eventName;
+  late final DateTime from;
+  late final DateTime to;
+  late final Color background;
+  late final bool isAllDay;
+  late final String startTimeZone;
+  late final String endTimeZone;
+  late final String description;
 
   late MeetingDataSource _events;
   late List<Appointment> _courses;
@@ -198,9 +207,78 @@ class _MyAppPageState extends State<MyAppPage>{
                       onPressed: (){
                         showDialog(context: context,
                             builder: (BuildContext context){
-                          return AlertDialog(
-                            title: Container(
-                              child: Text('Change Detail'),
+                          return Material(
+                            color: Colors.white,
+                            child: ListView(
+                              children: [
+                                ListTile(
+                                  title: Row(
+                                    children: [Text('Event Details',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                    ),),]
+                                  ),
+                                ),
+
+                                const Divider(
+                                  height: 1.0,
+                                  thickness: 0.5,
+                                ),
+
+                                ListTile(
+                                  title: Row(
+                                    children: [Text('$_subjectText',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                      ),),]
+                                  ),
+                                ),
+
+                                const Divider(
+                                  height: 1.0,
+                                  thickness: 0.5,
+                                ),
+
+                                ListTile(
+                                  title: Row(
+                                    children: [Text('$_startTimeText',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                      ),),]
+                                  ),
+                                ),
+
+                                const Divider(
+                                  height: 1.0,
+                                  thickness: 0.5,
+                                ),
+
+                                ListTile(
+                                  title: Row(
+                                    children: [Text('$_endTimeText',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                      ),)]
+                                  ),
+                                ),
+
+                                const Divider(
+                                  height: 1.0,
+                                  thickness: 0.5,
+                                ),
+
+                                new TextButton(
+                                    onPressed: (){
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Close'),),
+
+
+                              ],
                             ),
                           );
 
@@ -217,109 +295,32 @@ class _MyAppPageState extends State<MyAppPage>{
 
 
 class MeetingDataSource extends CalendarDataSource{
-MeetingDataSource(List<Appointment>courses){
+MeetingDataSource(List<Appointment>courses) {
   appointments = courses;
-}}
+}
 
+@override
+  bool isAllDay(int index) => appointments?[index].isAllDay;
 
+@override
+  String getSubject(int index) => appointments?[index].eventName;
 
-// practice
-// class Home extends StatelessWidget {
-//   const Home({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.grey[800],
-//       appBar: AppBar(
-//         title: const Text('ID Card'),
-//         centerTitle: true,
-//         backgroundColor: Colors.amber[300],
-//         // elevation: ,
-//       ),
-//       body:
-//       Column(
-//         children: [
-//           Expanded(
-//             flex: 6,
-//             child: Container(
-//               //alignment: Alignment.centerLeft,
-//                 child: Image.asset('assets/1672921962063.jpg', )),
-//           ),
-//
-//           Expanded(
-//             flex: 1,
-//             child: Container(
-//               padding: EdgeInsets.fromLTRB(2, 2, 2, 0),
-//               //color: Colors.blue,
-//               alignment: Alignment.centerLeft,
-//               child: Text('Name',
-//                 style: TextStyle(
-//                   color: Colors.white60,
-//                   letterSpacing: 3.0,
-//                   fontSize: 17,
-//                 ),
-//               ),
-//             ),
-//           ),
-//
-//           Expanded(
-//             flex: 2,
-//             child: Container(
-//               padding: EdgeInsets.fromLTRB(2, 0, 2, 6),
-//               //color: Colors.cyan,
-//               alignment: Alignment.centerLeft,
-//               child: Text('Sherlock Holmes',
-//               style: TextStyle(
-//               color: Colors.amber,
-//                 letterSpacing: 3.0,
-//                 fontSize: 30,
-//               ),
-//               ),
-//             ),
-//           ),
-//
-//           Expanded(
-//             flex: 1,
-//             child: Container(
-//                 padding: EdgeInsets.fromLTRB(2, 2, 2, 6),
-//                 //color: Colors.green,
-//                 alignment: Alignment.centerLeft,
-//                 child: Text('Address',
-//                   style: TextStyle(
-//                     color: Colors.white,
-//                   ), )),
-//           ),
-//
-//           Expanded(
-//
-//             flex: 3,
-//             child: Container(
-//                 padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
-//                 color: Colors.white,
-//                 alignment: Alignment.centerLeft,
-//                 child: Text('221/B Baker Street',
-//                   style: TextStyle(
-//                     color: Colors.yellow,
-//                     fontSize: 40,
-//                   ),)),
-//           ),
-//
-//           Container(
-//             padding: EdgeInsets.fromLTRB(0, 0, 0, 250),
-//             child: Row(
-//               children: [
-//                 Icon(Icons.mail,
-//                   color: Colors.white,),
-//                 Text('sherlocked@gmail..com',
-//                     style: TextStyle(
-//                     color: Colors.white,
-//                 ),)
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+@override
+  String getStartTimeZone(int index) => appointments?[index].startTimeZone;
+
+@override
+  String getNotes(int index) => appointments?[index].description;
+
+@override
+  String getEndTimeZone(int index) => appointments?[index].endTimeZone;
+
+@override
+  Color getColor(int index) => appointments?[index].background;
+
+@override
+  DateTime getStartTime(int index) => appointments?[index].from;
+
+@override
+  DateTime getEndTime(int index) => appointments?[index].to;
+
+}
