@@ -1,13 +1,16 @@
 library calendar;
 
-//import 'dart:ffi';
 import 'dart:math';
 
-import 'dart:html';
-
+//import 'package:connectswe/ui/auth/login_screen.dart';
+//import 'package:connectswe/ui/auth/login_screen_main.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
+
+//import '../utils/utils.dart';
 
 part 'appointment-editor.dart';
 
@@ -50,11 +53,10 @@ late DateTime _endDate;
 late TimeOfDay _endTime;
 bool _isAllDay = false;
 String _subject = '';
-String _notes = '';
+//String _notes = '';
 //String _recurrenceRule = '';
 
-
-class _EventCalendarState extends State<EventCalendar>{
+class _EventCalendarState extends State<EventCalendar> {
 
   _EventCalendarState();
 
@@ -62,9 +64,13 @@ class _EventCalendarState extends State<EventCalendar>{
   late List <Meeting> appointments;
   CalendarController calendarController = CalendarController();
 
-  late MeetingDataSource _events;
-  late List<Appointment> _courses;
-  late List<CalendarResource> _courseTeachers;
+
+  //late List<Appointment> _courses;
+  //late List<CalendarResource> _courseTeachers;
+
+  //late MeetingDataSource _events;
+  //late List<Appointment> _courses;
+  //late List<CalendarResource> _courseTeachers;
   late List<TimeRegion> _specialTimeRegion;
 
   @override
@@ -73,27 +79,29 @@ class _EventCalendarState extends State<EventCalendar>{
     addSpecialRegion();
     _events = MeetingDataSource(appointments);
     _selectedAppointment = null;
-    _selectedColorIndex = 0;
-    _selectedTimeZoneIndex = 0;
+
+    //_selectedColorIndex = 0;
+    //_selectedTimeZoneIndex = 0;
+
     _subject = '';
-    _notes = '';
+    //_notes = '';
     //_recurrenceRule = '';
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('Calendar'),
-        centerTitle: true,
-        backgroundColor: Colors.blueAccent,
-        // elevation: ,
-      ),
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text('Calendar'),
+          centerTitle: true,
+          backgroundColor: Colors.blueAccent,
+          // elevation: ,
+        ),
 
-      body: getEventCalendar(_events, onCalendarTapped)
+        body: getEventCalendar(_events, onCalendarTapped)
     );
   }
 
@@ -101,21 +109,33 @@ class _EventCalendarState extends State<EventCalendar>{
       CalendarTapCallback calendarTapCallback){
 
     return SfCalendar(
-      onTap: onCalendarTapped,
+
       view: CalendarView.week,
+      dataSource: _calendarDataSource,
+      specialRegions: _specialTimeRegion,
+
+      onTap: calendarTapCallback,
+      //allowedViews: const [CalendarView.week, CalendarView.timelineWeek],
       controller: calendarController,
+
       timeSlotViewSettings: TimeSlotViewSettings(
           startHour: 8, endHour: 17, timeFormat: 'h:mm',
           timeInterval: Duration(minutes: 30,)),
       todayHighlightColor: Colors.green[500],
-      appointmentTextStyle: TextStyle(
-        color: Colors.white,
-        fontSize: 13.5,
-        fontWeight: FontWeight.bold,
-      ),
 
-      dataSource: _calendarDataSource,
-      specialRegions: _specialTimeRegion,
+      appointmentBuilder: (context, details){
+        final Meeting meeting = details.appointments.first;
+        return Container(
+          color: Colors.redAccent,
+          child: Text(meeting.eventName,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 13.5,
+              fontWeight: FontWeight.bold,
+            ),),
+        );
+
+      },
     );
 
   }
@@ -130,42 +150,38 @@ class _EventCalendarState extends State<EventCalendar>{
     setState(() {
       _selectedAppointment = null;
       _isAllDay = false;
-      _selectedColorIndex = 0;
-      _selectedTimeZoneIndex = 0;
+      //_selectedColorIndex = 0;
+      //_selectedTimeZoneIndex = 0;
       _subject = '';
-      _notes = '';
+      //_notes = '';
       //_recurrenceRule = '';
 
-      if (calendarController.view == CalendarView.month) {
-        calendarController.view = CalendarView.day;
+      if (details.appointments != null &&
+          details.appointments!.length == 1) {
+        final Meeting meetingDetails = details.appointments![0];
+        _startDate = meetingDetails.from;
+        _endDate = meetingDetails.to;
+        _isAllDay = meetingDetails.isAllDay;
+        _subject = meetingDetails.eventName == '(No Title)' ?
+        '' : meetingDetails.eventName;
+        //_notes = meetingDetails.description;
+        _selectedAppointment = meetingDetails;
+        //_recurrenceRule = _recurrenceRule;
       }
-      else {
-        if (details.appointments != null &&
-            details.appointments!.length == 1) {
-          final Meeting meetingDetails = details.appointments![0];
-          _startDate = meetingDetails.from;
-          _endDate = meetingDetails.to;
-          _isAllDay = meetingDetails.isAllDay;
-          _subject = meetingDetails.eventName == '(No Title)' ?
-          '' : meetingDetails.eventName;
-          _notes = meetingDetails.description;
-          _selectedAppointment = meetingDetails;
-          //_recurrenceRule = _recurrenceRule;
-        }
 
-        else {
-          final DateTime date = details.date!;
-          _startDate = date;
-          _endDate = date.add(const Duration(hours: 1));
-        }
-        _startTime =
-            TimeOfDay(hour: _startDate.hour, minute: _startDate.minute);
-        _endTime = TimeOfDay(hour: _endDate.hour, minute: _endDate.minute);
-        Navigator.push<Widget>(
-          context,
-          MaterialPageRoute(builder:
-              (BuildContext context) => AppointmentEditor()),);
+      else {
+        final DateTime date = details.date!;
+        _startDate = date;
+        _endDate = date.add(const Duration(hours: 1));
       }
+      _startTime =
+          TimeOfDay(hour: _startDate.hour, minute: _startDate.minute);
+      _endTime = TimeOfDay(hour: _endDate.hour, minute: _endDate.minute);
+      Navigator.push<Widget>(
+        context,
+        MaterialPageRoute(builder:
+            (BuildContext context) => AppointmentEditor()),);
+    }
 
       //   if (details.targetElement == CalendarElement.appointment ||
       //       details.targetElement == CalendarElement.agenda) {
@@ -278,62 +294,20 @@ class _EventCalendarState extends State<EventCalendar>{
       //   }
       // }
 
-    });
+    );
   }
-
-  // List<Appointment> getAppointments(){
-  //   List<Appointment> meetings = <Appointment>[];
-  //   final DateTime today = DateTime.now();
-  //   final DateTime startTime =
-  //   DateTime(today.year, today.month, today.day, 10, 30, 0);
-  //   final DateTime endTime = startTime.add(const Duration(hours: 1, minutes: 30));
-  //
-  //   return meetings;
-  // }
-
-  // void addAppointments(){
-  //   var subjectCollection = [
-  //     'SWE 321', 'SWE 322', 'SWE 323', 'SWE 324',
-  //     'SWE 327', 'SWE 328', 'SWE 330',
-  //   ];
-  //
-  //   _courses = <Appointment>[];
-  //
-  //   _courses.add(Appointment(
-  //       startTime: DateTime(2023, 2, 12, 9, 30, 0),
-  //       endTime: DateTime(2023, 2, 12, 10, 30, 0),
-  //       subject: subjectCollection[0],
-  //       color: Colors.redAccent,
-  //
-  //       recurrenceRule: 'FREQ=DAILY,INTERVAL=7,COUNT=20',
-  //   ));
-  //
-  // }
-
-  // void addResourceDetails() {
-  //   var courseTeachers = [
-  //     'MRU', 'PPP', 'SSC', 'AMS', 'AHB',
-  //   ];
-  //
-  //   var teacherImages = [];
-  //
-  //   _courseTeachers = <CalendarResource>[];
-  // }
 
   void addSpecialRegion() {
     final DateTime date = DateTime(2023, 2, 12, 8, 0, 0);
     _specialTimeRegion = [
       TimeRegion(startTime: DateTime(2023, 2, 12, 13, 0, 0),
           endTime: DateTime(2023, 2, 12, 14, 0, 0),
-      text: 'LUNCH',
-      recurrenceRule: 'FREQ=DAILY,INTERVAL=1',
-      enablePointerInteraction: false)
+          text: 'LUNCH',
+          recurrenceRule: 'FREQ=DAILY,INTERVAL=1',
+          enablePointerInteraction: false)
     ];
 
   }
-
-
-
 
   List <Meeting> getMeetingDetails(){
     final List <Meeting> meetingCollection = <Meeting>[];
@@ -376,15 +350,14 @@ class _EventCalendarState extends State<EventCalendar>{
 
     return meetingCollection;
   }
+
+
 }
-
-
-
 
 class MeetingDataSource extends CalendarDataSource{
   MeetingDataSource(List<Meeting> source) {
     appointments = source;
-}
+  }
 
   @override
   bool isAllDay(int index) => appointments![index].isAllDay;
@@ -392,17 +365,17 @@ class MeetingDataSource extends CalendarDataSource{
   @override
   String getSubject(int index) => appointments![index].eventName;
 
-  @override
-  String getStartTimeZone(int index) => appointments![index].startTimeZone;
+  //@override
+  //String getStartTimeZone(int index) => appointments![index].startTimeZone;
 
-  @override
-  String getNotes(int index) => appointments![index].description;
+  //@override
+  // String getNotes(int index) => appointments![index].description;
 
-  @override
-  String getEndTimeZone(int index) => appointments![index].endTimeZone;
+  //@override
+  //String getEndTimeZone(int index) => appointments![index].endTimeZone;
 
-  @override
-  Color getColor(int index) => appointments![index].background;
+  //@override
+  //Color getColor(int index) => appointments![index].background;
 
   @override
   DateTime getStartTime(int index) => appointments![index].from;
@@ -410,8 +383,8 @@ class MeetingDataSource extends CalendarDataSource{
   @override
   DateTime getEndTime(int index) => appointments![index].to;
 
-  //@override
-  //String getRecurrenceRule(int index) => appointments![index].recurrenceRule;
+//@override
+//String getRecurrenceRule(int index) => appointments![index].recurrenceRule;
 
 }
 
@@ -422,19 +395,20 @@ class Meeting {
         this.background = Colors.green,
         this.isAllDay = false,
         this.eventName = '',
-        this.startTimeZone = '',
-        this.endTimeZone = '',
-        this.description = '',
+        //this.startTimeZone = '',
+        //this.endTimeZone = '',
+        //this.description = '',
         //this.recurrenceRule =''
-  });
+      });
 
   final String eventName;
   final DateTime from;
   final DateTime to;
   final Color background;
   final bool isAllDay;
-  final String startTimeZone;
-  final String endTimeZone;
-  final String description;
-  //final String? recurrenceRule;
+//final String startTimeZone;
+//final String endTimeZone;
+//final String description;
+//final String? recurrenceRule;
+
 }

@@ -9,6 +9,8 @@ class AppointmentEditor extends StatefulWidget{
 
 }
 
+// String? dropdownValue;
+
 class AppointmentEditorState extends State<AppointmentEditor>{
   Widget _getAppointmentEditor(BuildContext context){
     return Container(
@@ -17,26 +19,61 @@ class AppointmentEditorState extends State<AppointmentEditor>{
         children: [
 
           ListTile(
-            title: TextField(
-              controller: TextEditingController(
-                text: _subject,
-              ),
-              onChanged: (String value){
-                _subject = value;
+            title: DropDownTextField(
+              clearOption: false,
+              textFieldFocusNode: FocusNode(),
+              searchFocusNode: FocusNode(),
+              // searchAutofocus: true,
+              dropDownItemCount: 8,
+              searchShowCursor: false,
+              enableSearch: true,
+              searchKeyboardType: TextInputType.number,
+              dropDownList: const [
+                DropDownValueModel(name: 'name1', value: "value1"),
+                DropDownValueModel(
+                    name: 'name2',
+                    value: "value2",
+                    toolTipMsg:
+                    "DropDownButton is a widget that we can use to select one unique value from a set of values"),
+                DropDownValueModel(name: 'name3', value: "value3"),
+                DropDownValueModel(
+                    name: 'name4',
+                    value: "value4",
+                    toolTipMsg:
+                    "DropDownButton is a widget that we can use to select one unique value from a set of values"),
+                DropDownValueModel(name: 'name5', value: "value5"),
+                DropDownValueModel(name: 'name6', value: "value6"),
+                DropDownValueModel(name: 'name7', value: "value7"),
+                DropDownValueModel(name: 'name8', value: "value8"),
+              ],
+              onChanged: (val) {
+                _subject = val;
               },
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              style: const TextStyle(
-                fontSize: 25,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Add Title',
-              ),
             ),
-          ),
+
+            ),
+
+
+
+            // TextField(
+            //   controller: TextEditingController(
+            //     text: _subject,
+            //   ),
+            //   onChanged: (String value){
+            //     _subject = value;
+            //   },
+            //   keyboardType: TextInputType.multiline,
+            //   maxLines: null,
+            //   style: const TextStyle(
+            //     fontSize: 25,
+            //     color: Colors.black,
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            //   decoration: const InputDecoration(
+            //     border: InputBorder.none,
+            //     hintText: 'Add Title',
+            //   ),
+            // ),
 
           const Divider(
             height: 1.0,
@@ -82,82 +119,82 @@ class AppointmentEditorState extends State<AppointmentEditor>{
             contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
             leading: const Text(''),
             title: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                       child: GestureDetector(
-                    child: Text(
-                        DateFormat('EEE, MM.dd.yyyy').
-                        format(_startDate),
-                    textAlign: TextAlign.left),
+                        child: Text(
+                            DateFormat('EEE, MM.dd.yyyy').
+                            format(_startDate),
+                            textAlign: TextAlign.left),
                         onTap: () async {
-                      final DateTime? date = await showDatePicker(
-                          context: context,
-                          initialDate: _startDate,
-                          firstDate: DateTime(1990),
-                          lastDate: DateTime(2100)
-                      );
-
-                      if(date != null && date != _startDate){
-                        setState(() {
-                          final Duration difference =
-                              _endDate.difference(_startDate);
-                          _startDate = DateTime(
-                            date.year,
-                            date.month,
-                            date.day,
-                            _startTime.hour,
-                            _startTime.minute,
-                            0,
+                          final DateTime? date = await showDatePicker(
+                              context: context,
+                              initialDate: _startDate,
+                              firstDate: DateTime(1990),
+                              lastDate: DateTime(2100)
                           );
-                          _endDate = _startDate.add(difference);
-                          _endTime = TimeOfDay(
-                              hour: _endDate.hour,
-                              minute: _endDate.minute);
-                        });
-                      }
+
+                          if(date != null && date != _startDate){
+                            setState(() {
+                              final Duration difference =
+                              _endDate.difference(_startDate);
+                              _startDate = DateTime(
+                                date.year,
+                                date.month,
+                                date.day,
+                                _startTime.hour,
+                                _startTime.minute,
+                                0,
+                              );
+                              _endDate = _startDate.add(difference);
+                              _endTime = TimeOfDay(
+                                  hour: _endDate.hour,
+                                  minute: _endDate.minute);
+                            });
+                          }
 
                         },)
                   ),
                   Expanded(
                     //flex: 3,
-                      child: _isAllDay
-                          ? const Text('')
-                          : GestureDetector(
-                    child: Text(
-                      DateFormat('hh:mm a').format(_startDate),
-                      textAlign: TextAlign.right,
-                    ),
-                    onTap: () async {
-                      final TimeOfDay? time =
+                    child: _isAllDay
+                        ? const Text('')
+                        : GestureDetector(
+                        child: Text(
+                          DateFormat('hh:mm a').format(_startDate),
+                          textAlign: TextAlign.right,
+                        ),
+                        onTap: () async {
+                          final TimeOfDay? time =
                           await showTimePicker(
                               context: context,
                               initialTime: TimeOfDay(
                                   hour: _startTime.hour,
                                   minute: _startTime.minute));
 
-                   if (time != null && time != _startTime){
-                     setState(() {
-                       _startTime = time;
-                       final Duration difference =
-                           _endDate.difference(_startDate);
-                       _startDate = DateTime(
-                         _startDate.year,
-                         _startDate.month,
-                         _startDate.day,
-                         _startTime.hour,
-                         _startTime.minute,
-                         0,
-                       );
+                          if (time != null && time != _startTime){
+                            setState(() {
+                              _startTime = time;
+                              final Duration difference =
+                              _endDate.difference(_startDate);
+                              _startDate = DateTime(
+                                _startDate.year,
+                                _startDate.month,
+                                _startDate.day,
+                                _startTime.hour,
+                                _startTime.minute,
+                                0,
+                              );
 
-                       _endDate = _startDate.add(difference);
-                       _endTime = TimeOfDay(
-                         hour: _endDate.hour,
-                         minute: _endDate.minute,
-                       );
-                     });
-                   }
-                    }),)
+                              _endDate = _startDate.add(difference);
+                              _endTime = TimeOfDay(
+                                hour: _endDate.hour,
+                                minute: _endDate.minute,
+                              );
+                            });
+                          }
+                        }),)
 
                 ]
             ),
@@ -172,92 +209,92 @@ class AppointmentEditorState extends State<AppointmentEditor>{
             contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
             leading: const Text(''),
             title: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(child: GestureDetector(
-                    child: Text(
-                      DateFormat('EEE, MM.dd.yyyy').
-                      format(_endDate),
-                      textAlign: TextAlign.left,
-                    ),
-                    onTap: () async {
-                      final DateTime? date = await showDatePicker(
-                          context: context,
-                          initialDate: _endDate,
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime(2100));
-                      if (date != null && date != _endDate){
-                        setState(() {
-                          final Duration difference =
-                              _endDate.difference(_startDate);
-                          _endDate = DateTime(
-                            date.year,
-                            date.month,
-                            date.day,
-                            _endTime.hour,
-                            _endTime.minute,
-                            0,
-                          );
-
-                          if(_endDate.isBefore(_startDate)){
-                            _startDate = _endDate.subtract(difference);
-                            _startTime = TimeOfDay(
-                              hour: _startDate.hour,
-                              minute: _startDate.minute
+                      child: Text(
+                        DateFormat('EEE, MM.dd.yyyy').
+                        format(_endDate),
+                        textAlign: TextAlign.left,
+                      ),
+                      onTap: () async {
+                        final DateTime? date = await showDatePicker(
+                            context: context,
+                            initialDate: _endDate,
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime(2100));
+                        if (date != null && date != _endDate){
+                          setState(() {
+                            final Duration difference =
+                            _endDate.difference(_startDate);
+                            _endDate = DateTime(
+                              date.year,
+                              date.month,
+                              date.day,
+                              _endTime.hour,
+                              _endTime.minute,
+                              0,
                             );
-                          }
 
-                        });
+                            if(_endDate.isBefore(_startDate)){
+                              _startDate = _endDate.subtract(difference);
+                              _startTime = TimeOfDay(
+                                  hour: _startDate.hour,
+                                  minute: _startDate.minute
+                              );
+                            }
+
+                          });
+                        }
+
                       }
-
-                    }
                   )),
                   Expanded(
                       child: _isAllDay
-                  ? const Text(''):
-                  GestureDetector(
-                    child: Text(
-                      DateFormat('hh:mm a').
-                      format(_endDate),
-                      textAlign: TextAlign.right,
-                    ),
+                          ? const Text(''):
+                      GestureDetector(
+                          child: Text(
+                            DateFormat('hh:mm a').
+                            format(_endDate),
+                            textAlign: TextAlign.right,
+                          ),
 
-                    onTap: () async {
-                      final TimeOfDay? time = await showTimePicker(
+                          onTap: () async {
+                            final TimeOfDay? time = await showTimePicker(
                               context: context,
                               initialTime: TimeOfDay(
                                 hour: _endTime.hour,
                                 minute: _endTime.minute,
                               ),
-                          );
+                            );
 
-                      if(time != null && time !=_endTime){
-                        setState(() {
-                          _endTime = time;
+                            if(time != null && time !=_endTime){
+                              setState(() {
+                                _endTime = time;
 
-                          final Duration difference =
-                              _endDate.difference(_startDate);
+                                final Duration difference =
+                                _endDate.difference(_startDate);
 
-                          _endDate = DateTime(
-                              _endDate.year,
-                              _endDate.month,
-                              _endDate.day,
-                              _endTime.hour,
-                              _endTime.minute,
-                            0,
-                          );
+                                _endDate = DateTime(
+                                  _endDate.year,
+                                  _endDate.month,
+                                  _endDate.day,
+                                  _endTime.hour,
+                                  _endTime.minute,
+                                  0,
+                                );
 
-                          if(_endDate.isBefore(_startDate)){
-                            _startDate =
-                                _endDate.subtract(difference);
-                            _startTime = TimeOfDay(
-                                hour: _startDate.hour,
-                                minute: _startDate.minute);
+                                if(_endDate.isBefore(_startDate)){
+                                  _startDate =
+                                      _endDate.subtract(difference);
+                                  _startTime = TimeOfDay(
+                                      hour: _startDate.hour,
+                                      minute: _startDate.minute);
+                                }
+                              });
+                            }
                           }
-                        });
-                      }
-                    }
-                  )),
+                      )),
                 ]
             ),
           ),
@@ -272,8 +309,6 @@ class AppointmentEditorState extends State<AppointmentEditor>{
               Navigator.of(context).pop();
             },
             child: Text('Close'),),
-
-
         ],
       ),
     );
@@ -283,24 +318,24 @@ class AppointmentEditorState extends State<AppointmentEditor>{
   Widget build(BuildContext context) {
 
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 45,
-          title: Text(getTile(),),
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          appBar: AppBar(
+              toolbarHeight: 45,
+              title: Text(getTile(),),
               backgroundColor: Colors.redAccent,
 
-          leading: IconButton(
-            icon: const Icon(
-              Icons.close,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-              },
-          ),
-            actions: [
-              IconButton(
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              actions: [
+                IconButton(
                   icon: const Icon(
                     Icons.done,
                     color: Colors.white,),
@@ -308,59 +343,57 @@ class AppointmentEditorState extends State<AppointmentEditor>{
                     final List<Meeting> meetings = <Meeting>[];
                     if (_selectedAppointment != null){
                       _events.appointments!.removeAt(_events.appointments!
-                      .indexOf(_selectedAppointment));
+                          .indexOf(_selectedAppointment));
                       _events.notifyListeners(CalendarDataSourceAction.remove,
-                      <Meeting>[]..add(_selectedAppointment!));
+                          <Meeting>[]..add(_selectedAppointment!));
                     }
-
                     meetings.add(Meeting(
                       from: _startDate,
                       to: _endDate,
                       background: Colors.redAccent,
-                      description: _notes,
+                      //description: _notes,
                       isAllDay: _isAllDay,
-                      eventName: _subject == ''?'(No Title)' : _subject,
+                      eventName: _subject == '' ? '(No Title)' : _subject,
                       //recurrenceRule:
                     ));
 
                     _events.appointments!.add(meetings[0]);
-
-                    _events.notifyListeners(CalendarDataSourceAction.add, meetings);
+                    _events.notifyListeners(
+                        CalendarDataSourceAction.add, meetings);
                     _selectedAppointment = null;
 
                     Navigator.pop(context);
-
                   },
-                  )
-            ]
+                )
+              ]
 
-        ),
-        body: Stack(
-          children: [_getAppointmentEditor(context)],
-        ),
-        floatingActionButton: _selectedAppointment == null
-        ? const Text('') :
-        FloatingActionButton(
+          ),
+          body: Stack(
+            children: [_getAppointmentEditor(context)],
+          ),
+          floatingActionButton: _selectedAppointment == null
+              ? const Text('') :
+          FloatingActionButton(
             onPressed: (){
               if (_selectedAppointment != null){
-                _events.appointments!.removeAt(_events.appointments!
-                        .indexOf(_selectedAppointment));
+                _events.appointments!.removeAt(
+                    _events.appointments!.indexOf(_selectedAppointment));
+
                 _events.notifyListeners(CalendarDataSourceAction.remove,
-                <Meeting>[]..add(_selectedAppointment!));
+                    <Meeting>[]..add(_selectedAppointment!));
                 _selectedAppointment = null;
                 Navigator.pop(context);
               }
             },
-          child: const Icon(
-            Icons.delete_outline,
-            color: Colors.white,)
-          ,),
+            child: const Icon(
+              Icons.delete_outline,
+              color: Colors.white,)
+            ,),
 
-      )
+        )
     );
   }
 
   String getTile() {
-    return _subjectText.isEmpty ? 'New Event' : 'Event Details';
-  }
-}
+    return _subject.isEmpty ? 'New Event' : 'Event Details';
+  } }
